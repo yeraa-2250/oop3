@@ -1,17 +1,42 @@
-package org.example;
+import org.example.*;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
-    static void main() {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(String.format("Hello and welcome!"));
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            IO.println("i = " + i);
-        }
+    public static void main(String[] args) {
+
+        Product phone = new Electronics("iPhone 17 Pro Max", 982000);
+        Product laptop = new Electronics("MacBook Pro", 1500000);
+
+        List<Product> products = new ArrayList<>();
+        products.add(phone);
+        products.add(laptop);
+
+        Shopper shopper = new Shopper(
+                "Yernur",
+                "ernur@gmail.com",
+                "Kabanbay 60a/13"
+        );
+
+        Order order = new Order(shopper, phone, 1);
+        order.pay();
+
+        System.out.println("\nSorted by price:");
+        products.stream()
+                .sorted((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()))
+                .forEach(System.out::println);
+
+        System.out.println("\nOnly electronics:");
+        products.stream()
+                .filter(p -> p.getCategory().equalsIgnoreCase("Electronics"))
+                .forEach(System.out::println);
+
+        Product found = products.stream()
+                .filter(p -> p.getName().equalsIgnoreCase("MacBook Pro"))
+                .findFirst()
+                .orElse(null);
+        System.out.println("\nSearch result: " + found);
     }
 }
