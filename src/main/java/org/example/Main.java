@@ -1,42 +1,45 @@
-import org.example.*;
+package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
 
 public class Main {
-
     public static void main(String[] args) {
+        ProductRepository productRepo = new ProductRepository();
+        ShopperRepository shopperRepo = new ShopperRepository();
 
-        Product phone = new Electronics("iPhone 17 Pro Max", 982000);
-        Product laptop = new Electronics("MacBook Pro", 1500000);
+        try {
+            productRepo.save(new Product("iPhone 17 Pro Max", 982000, "Electronics"));
+            productRepo.save(new Product("MacBook Pro", 1500000, "Electronics"));
 
-        List<Product> products = new ArrayList<>();
-        products.add(phone);
-        products.add(laptop);
+            System.out.println("Inserted data into DB.\n");
 
-        Shopper shopper = new Shopper(
-                "Yernur",
-                "ernur@gmail.com",
-                "Kabanbay 60a/13"
-        );
+            System.out.println("Products in DB:");
+            for (Product p : productRepo.findAll()) {
+                System.out.println(p.getName() + " | " + p.getCategory() + " | $" + p.getPrice());
+            }
 
-        Order order = new Order(shopper, phone, 1);
-        order.pay();
+            shopperRepo.save(new Shopper("Yernur", "ernur@gmail.com", "Kabanbay 60a/13"));
 
-        System.out.println("\nSorted by price:");
-        products.stream()
-                .sorted((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()))
-                .forEach(System.out::println);
+            System.out.println("\nShoppers in DB:");
+            System.out.println(shopperRepo.findByEmail("ernur@gmail.com"));
 
-        System.out.println("\nOnly electronics:");
-        products.stream()
-                .filter(p -> p.getCategory().equalsIgnoreCase("Electronics"))
-                .forEach(System.out::println);
+            productRepo.updatePrice("MacBook Pro", 1450000);
+            shopperRepo.updateAddress("ernur@gmail.com", "Astana");
 
-        Product found = products.stream()
-                .filter(p -> p.getName().equalsIgnoreCase("MacBook Pro"))
-                .findFirst()
-                .orElse(null);
-        System.out.println("\nSearch result: " + found);
+            System.out.println("\nAfter updates:");
+            for (Product p : productRepo.findAll()) {
+                System.out.println(p.getName() + " | " + p.getCategory() + " | $" + p.getPrice());
+            }
+            System.out.println(shopperRepo.findByEmail("ernur@gmail.com"));
+
+            productRepo.deleteByName("MacBook Pro");
+            System.out.println("\nAfter deletion:");
+            for (Product p : productRepo.findAll()) {
+                System.out.println(p.getName() + " | " + p.getCategory() + " | $" + p.getPrice());
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
