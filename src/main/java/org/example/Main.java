@@ -33,7 +33,7 @@ public class Main {
             System.out.println(shopperRepo.findByEmail("ernur@gmail.com"));
 
             productRepo.deleteByName("MacBook Pro");
-            System.out.println("\nAfter deletion:");
+            System.out.println("\nAfter delsetion:");
             for (Product p : productRepo.findAll()) {
                 System.out.println(p.getName() + " | " + p.getCategory() + " | $" + p.getPrice());
             }
